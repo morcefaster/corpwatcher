@@ -262,7 +262,7 @@ client.on("message", (message) => {
             watchwebsitehttps(websiteurl);
         } else if (websiteurl.startsWith("http://")) {
             watchWebsite(websiteurl);
-            watchwebsitehttps(websiteurl);
+            watchwebsitehttp(websiteurl);
         } else {
             message.channel.send(message.author+": Please include the fucking protocol.");
             return;
@@ -343,7 +343,8 @@ client.on("message", (message) => {
     if (command ==="listwebsites") {        
         message.channel.send(message.author+": Currently I'm watching "+websiteswatched.length+" websites.");
         for(var i in websiteswatched) {
-            message.channel.send((i+1)+": ["+websiteswatched[i].url+"]");
+            num = parseInt(i) + 1;
+            message.channel.send(num+": ["+websiteswatched[i].url+"]");
         }
     }
 
