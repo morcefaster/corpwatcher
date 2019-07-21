@@ -31,7 +31,7 @@ var rolename = "corpcontroller";
 var spamrolename = "spamreader";
 var superrolename = "corpcontroller";
 var adminrolename = "Admin";
-var websiteswatched;
+var websiteswatched = [];
 
 var spamchannel;
 var errorchannel;
