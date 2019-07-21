@@ -340,6 +340,13 @@ client.on("message", (message) => {
         currentcomments = parseInt(message.content.toLowerCase().split(" ")[1]);
     }
 
+    if (command ==="listwebsites") {        
+        message.channel.send(message.author+": Currently I'm watching "+websiteswatched.length+" websites.");
+        for(var i in websiteswatched) {
+            message.channel.send((i+1)+": ["+websiteswatched[i].url+"]");
+        }
+    }
+
     if (command ==="testsetwebsite") {
         if (!message.member.roles.find(r=>r.name === superrolename) && !message.member.roles.find(r=>r.name === adminrolename))  {
             message.channel.send(message.author+": and who the fuck are you to ask me that?");
