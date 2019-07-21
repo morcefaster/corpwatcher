@@ -438,5 +438,4 @@ function watchwebsitehttp(website) {
 
 
 // function which log in the bot
-console.log("TOKEN IS ", process.env.mysweettoken);
 client.login(process.env.mysweettoken);
