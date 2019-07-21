@@ -5,8 +5,9 @@ const https = require('follow-redirects').https;
 
 require('http').createServer().listen(3000)
 
-const BOT_VERSION = "1.0.0";
+const BOT_VERSION = "2.0.0";
 const delay = 15000;
+const MAX_WEBSITES = 10;
 
 // Here you find the prefix for all commands.
 // For example: When it is set to "!" then you can execute commands with "!" like "!help"
@@ -20,14 +21,17 @@ const helpfulthings = ["Have you tried checking the background image?",
 "What if you gather all sounds together and play them backwards?",
 "Are you *sure* you checked the background image?",
 "The robotic fish are hiding something."]
-const howtocallme = ["master", "my flesh-bearing eminence", "your majesty", "your highness", "your greatness", "o' great hero", "o' great hero, defeater of corporations, eater of sausages", "o' great hero, ruler of corporations, preorderer of Cyberpunk 2077"];
+const howtocallme = ["master", "my flesh-bearing eminence", "your majesty", "your highness", "your greatness", "o' great hero", "o' great hero, defeater of corporations, eater of sausages", "o' great hero, ruler of corporations, preorderer of Cyberpunk 2077", "though I'm not doing it for your sake, baka"];
 var role;
+var spamrole;
 var checkredditposts = 0;
 var checkredditcomments = 0;
 var checkwebsite = 0;
-var rolename = "corpwatcher";
+var rolename = "corpcontroller";
+var spamrolename = "spamreader";
 var superrolename = "corpcontroller";
 var adminrolename = "Admin";
+var websiteswatched;
 
 var spamchannel;
 var errorchannel;
@@ -36,7 +40,6 @@ var welcomechannel;
 
 var currentposts = 0;
 var currentcomments = 0;
-var currentwebsite = "";
 var watcheduser = "";
 var watchedwebsite = "";
 var firstrunc=0;
@@ -53,14 +56,91 @@ var spamtriggerwebsite = 0;
 
 var spamcount = 3;
 
+function isWatched(url) {
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url = url) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function watchWebsite(url) {
+    websiteswatched.push( { 
+        url: url,
+        firstrun: 0,
+        content: null,
+        spamtrigger: 0
+    });
+}
+
+function shouldSpam(url) {
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url = url) {
+            websiteswatched[i].spamtrigger = websiteswatched[i].spamtrigger % spamcount;
+            return websiteswatched[i] === 1;
+        }
+    }
+    console.log("Could not find website "+url+" (shouldSpam)");
+}
+
+function getContent(url) {
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url = url) {
+            return websiteswatched[i].content;
+        }
+    }
+    console.log("Could not find website "+url+" (get content)");
+}
+
+function setContent(url, content){
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url = url) {
+            websiteswatched[i].content = content;
+            return;
+        }
+    }
+    console.log("Could not find website "+url+" (set content)");
+}
+
+function isFirstRun(url) {
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url = url) {
+            return websiteswatched[i].firstrun;
+        }
+    }
+    console.log("Could not find website "+url+" (isFirstRun)");
+}
+
+function firstRun(url) {
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url = url) {
+            websiteswatched[i].firstRun=1;
+            return;
+        }
+    }
+    console.log("Could not find website "+url+" (firstRun)");
+}
+
+function removeSite(url) {
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url = url) {
+            websiteswatched.splice(i, 1);
+            return;
+        }
+    }
+    console.log("Could not find website "+url+" (removeSite)");
+}
+
+
 
 function firstrunreddit() {
     firstrunc = 0;
     firstrunp = 0;
 }
 
-function firstrunwebsite() {
-    firstrunw = 0;
+function firstrunwebsite(url) {
+    websiteswatched_fr.find()
 }
 
 function pickone(list) {
@@ -74,7 +154,8 @@ client.on("ready", () => {
     const guild = client.guilds.get("602463551134892053");
     console.log("guild is "+guild);
     role = guild.roles.find(r => r.name === rolename);
-    console.log("role is "+role);    
+    console.log("role is "+role);  
+    spamrole = guild.roles.find(r=> r.name = spamrolename);
     spamchannel = guild.channels.find(r=>r.name === "shamelessspam");
     errorchannel = guild.channels.find(r=>r.name === "errors");
     alertchannel = guild.channels.find(r=>r.name === "argalert");
@@ -155,28 +236,33 @@ client.on("message", (message) => {
             return;
         }
 
-        if (checkwebsite) {
-            message.channel.send(message.author+": I'm already watching website \""+watchedwebsite+"\" and I'm too stupid to watch more than one. Complain to Morce.");
+        if (websiteswatched.length > MAX_WEBSITES) {
+            message.channel.send(message.author+": So many websites won't fit, onii-chan! Max: " + MAX_WEBSITES);
             return;
         }
 
-        watchedwebsite = message.content.toLowerCase().split(" ");
-        if (watchedwebsite.length === 1) {
-            message.channel.send(message.author + " what fucking site?");
+        websiteurl = message.content.toLowerCase().split(" ");
+        if (websiteurl.length === 1) {
+            message.channel.send(message.author + ": what fucking website?");
             return;
         }
-        if (watchedwebsite.length > 2) {            
-            message.channel.send(message.author + " which fucking site?");
+        if (websiteurl.length > 2) {            
+            message.channel.send(message.author + ": which fucking website?");
             return;
         }
-        watchedwebsite = watchedwebsite[1];
-        firstrunwebsite();
-        if (watchedwebsite.startsWith("https://")) {
-            checkwebsite = 1;
-            watchwebsitehttps(watchedwebsite);
-        } else if (watchedwebsite.startsWith("http://")) {
-            checkwebsite = 1;
-            watchwebsitehttps(watchedwebsite);
+        websiteurl = websiteurl[1];
+        
+        if (isWatched(websiteurl)){
+            message.channel.send(message.author + ": I'm already watching that website, baka.");
+            return;
+        }
+
+        if (websiteurl.startsWith("https://")) {
+            watchWebsite(websiteurl);
+            watchwebsitehttps(websiteurl);
+        } else if (websiteurl.startsWith("http://")) {
+            watchWebsite(websiteurl);
+            watchwebsitehttps(websiteurl);
         } else {
             message.channel.send(message.author+": Please include the fucking protocol.");
             return;
@@ -188,15 +274,24 @@ client.on("message", (message) => {
         if (!message.member.roles.find(r=>r.name === superrolename) && !message.member.roles.find(r=>r.name === adminrolename))  {
             message.channel.send(message.author+": and who the fuck are you to ask me that?");
             return;
-        }
+        }        
 
-        if (!checkwebsite) {
-            message.channel.send("I-I'm not doing that, "+message.author+"!");
+        websiteurl = message.content.toLowerCase().split(" ");
+        if (websiteurl.length === 1) {
+            message.channel.send(message.author + " what fucking website?");
             return;
         }
+        if (websiteurl.length > 2) {            
+            message.channel.send(message.author + " which fucking website?");
+            return;
+        }
+        websiteurl = websiteurl[1];
+        if (isWatched(websiteurl)){
+            message.channel.send(message.author + ": I-I'm not even watching that!");
+            return;
+        }        
 
-        watchedwebsite = "";
-        checkwebsite = 0;
+        removeSite(websiteurl);
         message.channel.send("As you wish, "+pickone(howtocallme)+".");
     }
 
@@ -223,7 +318,7 @@ client.on("message", (message) => {
         let now = Date.now();
         timebetween = now - lasterror;
         if (timebetween > 60*1000*30) {
-            message.channel.send(message.author+": I'm quite fine, thank you. Errors so far: "+errors);
+            message.channel.send(message.author+": I'm quite fine, thank you. Last error was "+ (lasterror?(((Date.now()-lasterror)/60000)+" minutes ago."):"never." ) +" Errors so far: "+errors);
         } else {
             message.channel.send(message.author+": Seems that I've ran into some issues in the last 30 minutes. Total errors: "+errors);
         }
@@ -249,8 +344,13 @@ client.on("message", (message) => {
         if (!message.member.roles.find(r=>r.name === superrolename) && !message.member.roles.find(r=>r.name === adminrolename))  {
             message.channel.send(message.author+": and who the fuck are you to ask me that?");
             return;
+        }        
+        if (message.content.toLowerCase().split(" ").length > 1) {
+            setContent(message.content.toLowerCase().split(" ")[1], message.content.toLowerCase().split(" ")[2]);
+            message.channel.send("As you wish, "+pickone(howtocallme)+".");
+        } else {
+            message.channel.send("Are you retarded, sir?");
         }
-        currentwebsite = message.content.toLowerCase().split(" ")[1];
     }
 
     if (command ==="iwannawatchtoo" || command === "w") {
@@ -259,7 +359,7 @@ client.on("message", (message) => {
             return;
         }
         message.member.addRole(role).catch(console.error);
-        message.channel.send(message.author+": Congratulations! You are now a stalker.");
+        message.channel.send(message.author+": Cheeki-breeki! You are now a stalker.");
     }
 
     if (command ==="idontwannawatchanymore" || command==="nw") {
@@ -268,7 +368,25 @@ client.on("message", (message) => {
             return;
         }
         message.member.removeRole(role).catch(console.error);
-        message.channel.send(message.author+": Congratulations! You are no longer a stalker.");
+        message.channel.send(message.author+": Congratulations! You are no longer a stalker. What a bore.");
+    }
+
+    if (command ==="iwannareadspam" || command === "wrs") {
+        if (message.member.roles.find(r=>r.name === spamrolename)) {
+            message.channel.send(message.author+": then go for it, dummy. What do you need me for?");
+            return;
+        }
+        message.member.addRole(spamrole).catch(console.error);
+        message.channel.send(message.author+": Congratulations(?) You can now read spam.");
+    }
+
+    if (command ==="idontwannareadspam" || command==="nwrs") {
+        if (!message.member.roles.find(r=>r.name === spamrolename)) {
+            message.channel.send(message.author+": then don't. Why bother me? I'm busy spamming.");
+            return;
+        }
+        message.member.removeRole(spamrole).catch(console.error);
+        message.channel.send(message.author+": Congratulations! You are now spam-free.");
     }
 });
 
@@ -366,9 +484,9 @@ function watchcomments(user) {
 }
 
 function watchwebsitehttps(website) {
-    if (checkwebsite){
+    if (isWatched(website)){
         setTimeout( () => {     
-            if (checkwebsite){
+            if (isWatched(website)){
                 let options = {                    
                     headers: { 'User-Agent': 'argchecker/1.1' }
                 }                  
@@ -378,19 +496,18 @@ function watchwebsitehttps(website) {
                     var data = "";
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{
-                        try {             
-                            websitehtml = data;                                        
-                            spamtriggerwebsite = (spamtriggerwebsite+1) % spamcount;
-                            if (spamtriggerwebsite === 1) {
-                                spamchannel.send("Website "+website+" has "+websitehtml.length+" characters. " + (firstrunw?(currentwebsite!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));
+                        try{ 
+                            websitehtml = data;                            
+                            if (shouldSpam(website)) {
+                                spamchannel.send("Website "+website+" has "+data.length+" characters. " + (isFirstRun(website)?(getContent(website)!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));
                             }
-                            if (websitehtml!==currentwebsite) {
-                                if (firstrunw) {
-                                    alertchannel.send(role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
-                                } 
-                                currentwebsite=websitehtml;
-                            }
-                            firstrunw = 1;
+                            if (websitehtml!==getContent(website)) {
+                                if (isFirstRun(website)) {
+                                    alertchannel.send(role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
+                                }
+                                setContent(website, websitehtml);
+                            }    
+                            firstRun(website);
                         } catch (ex) {
                             console.log(ex);
                         }
@@ -401,16 +518,16 @@ function watchwebsitehttps(website) {
                     lasterror = Date.now();
                     errorchannel.send("Had an issue getting website "+website+": "+e.message+" (code "+error.http_code+")");
                 })
-                watchwebsitehttps(website);
+                watchwebsitehttp(website);
             }
         }, delay);
     }
 }
 
 function watchwebsitehttp(website) {
-    if (checkwebsite){
+    if (isWatched(website)){
         setTimeout( () => {     
-            if (checkwebsite){
+            if (isWatched(website)){
                 let options = {                    
                     headers: { 'User-Agent': 'argchecker/1.1' }
                 }                  
@@ -421,18 +538,17 @@ function watchwebsitehttp(website) {
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{
                         try{ 
-                            websitehtml = data;                                        
-                            spamtriggerwebsite = (spamtriggerwebsite+1) % spamcount;
-                            if (spamtriggerwebsite === 1) {
-                                spamchannel.send("Website "+website+" has "+websitehtml.length+" characters. " + (firstrunw?(currentwebsite!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));
+                            websitehtml = data;                            
+                            if (shouldSpam(website)) {
+                                spamchannel.send("Website "+website+" has "+data.length+" characters. " + (isFirstRun(website)?(getContent(website)!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));
                             }
-                            if (websitehtml!==currentwebsite) {
-                                if (firstrunw) {
+                            if (websitehtml!==getContent(website)) {
+                                if (isFirstRun(website)) {
                                     alertchannel.send(role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
                                 }
-                                currentwebsite=websitehtml;
+                                setContent(website, websitehtml);
                             }    
-                            firstrunw = 1;                    
+                            firstRun(website);
                         } catch (ex) {
                             console.log(ex);
                         }
