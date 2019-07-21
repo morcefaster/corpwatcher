@@ -57,8 +57,7 @@ var spamtriggerwebsite = 0;
 var spamcount = 3;
 
 function isWatched(url) {
-    for(var x in websiteswatched){
-        console.log("checking w["+x+"] url = "+websiteswatched[x].url+" looking for "+url);
+    for(var x in websiteswatched){        
         if (websiteswatched[x].url === url) {
             return true;
         }
@@ -78,7 +77,7 @@ function watchWebsite(url) {
 function shouldSpam(url) {
     for(var i in websiteswatched){
         if (websiteswatched[i].url === url) {
-            websiteswatched[i].spamtrigger = websiteswatched[i].spamtrigger % spamcount;
+            websiteswatched[i].spamtrigger = (websiteswatched[i].spamtrigger +1 ) % spamcount;
             return websiteswatched[i] === 1;
         }
     }
