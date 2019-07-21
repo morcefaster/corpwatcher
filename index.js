@@ -287,7 +287,7 @@ client.on("message", (message) => {
             return;
         }
         websiteurl = websiteurl[1];
-        if (isWatched(websiteurl)){
+        if (!isWatched(websiteurl)){
             message.channel.send(message.author + ": I-I'm not even watching that!");
             return;
         }        
