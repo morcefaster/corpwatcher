@@ -336,7 +336,7 @@ function watchcomments(user) {
                             }
                             if (comments!==currentcomments) {
                                 if (firstrunc){
-                                    alertchannel.send(role+"**OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
+                                    alertchannel.send(role+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
                                 }
                                 currentcomments=comments;
                             }
@@ -380,7 +380,7 @@ function watchwebsitehttps(website) {
                             }
                             if (websitehtml!==currentwebsite) {
                                 if (firstrunw) {
-                                    alertchannel.send(role+"{} **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
+                                    alertchannel.send(role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
                                 } 
                                 currentwebsite=websitehtml;
                             }
