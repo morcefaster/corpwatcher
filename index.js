@@ -57,8 +57,9 @@ var spamtriggerwebsite = 0;
 var spamcount = 3;
 
 function isWatched(url) {
-    for(var i in websiteswatched){
-        if (websiteswatched[i].url === url) {
+    for(var x in websiteswatched){
+        console.log("checking w["+x+"] url = "+websiteswatched[x].url);
+        if (websiteswatched[x].url === url) {
             return true;
         }
     }
@@ -340,12 +341,14 @@ client.on("message", (message) => {
         currentcomments = parseInt(message.content.toLowerCase().split(" ")[1]);
     }
 
-    if (command ==="listwebsites") {        
-        message.channel.send(message.author+": Currently I'm watching "+websiteswatched.length+" websites.");
+    if (command ==="listwebsites") {      
+        var mes = message.author+": Currently I'm watching "+websiteswatched.length+" websites.";        
         for(var i in websiteswatched) {
             num = parseInt(i) + 1;
-            message.channel.send(num+": ["+websiteswatched[i].url+"]");
+            mes += "\n"+num+": ["+websiteswatched[i].url+"]");
         }
+        message.channel.send(mes);
+
     }
 
     if (command ==="testsetwebsite") {
@@ -495,7 +498,6 @@ function watchwebsitehttps(website) {
     if (isWatched(website)){
         setTimeout( () => {     
             if (isWatched(website)){
-                console.log("[https]  "+website);
                 let options = {                    
                     headers: { 'User-Agent': 'argchecker/1.1' }
                 }                  
@@ -537,7 +539,6 @@ function watchwebsitehttp(website) {
     if (isWatched(website)){
         setTimeout( () => {     
             if (isWatched(website)){
-                console.log("[http]  "+website);
                 let options = {                    
                     headers: { 'User-Agent': 'argchecker/1.1' }
                 }                  
