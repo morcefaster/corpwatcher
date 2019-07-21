@@ -494,6 +494,7 @@ function watchwebsitehttps(website) {
     if (isWatched(website)){
         setTimeout( () => {     
             if (isWatched(website)){
+                console.log("[https]  "+website);
                 let options = {                    
                     headers: { 'User-Agent': 'argchecker/1.1' }
                 }                  
@@ -535,6 +536,7 @@ function watchwebsitehttp(website) {
     if (isWatched(website)){
         setTimeout( () => {     
             if (isWatched(website)){
+                console.log("[http]  "+website);
                 let options = {                    
                     headers: { 'User-Agent': 'argchecker/1.1' }
                 }                  
