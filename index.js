@@ -345,7 +345,7 @@ client.on("message", (message) => {
         var mes = message.author+": Currently I'm watching "+websiteswatched.length+" websites.";        
         for(var i in websiteswatched) {
             num = parseInt(i) + 1;
-            mes += "\n"+num+": ["+websiteswatched[i].url+"]");
+            mes += "\n"+num+": ["+websiteswatched[i].url+"]";
         }
         message.channel.send(mes);
 
