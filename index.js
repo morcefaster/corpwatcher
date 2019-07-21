@@ -58,7 +58,7 @@ var spamcount = 3;
 
 function isWatched(url) {
     for(var x in websiteswatched){
-        console.log("checking w["+x+"] url = "+websiteswatched[x].url);
+        console.log("checking w["+x+"] url = "+websiteswatched[x].url+" looking for "+url);
         if (websiteswatched[x].url === url) {
             return true;
         }
