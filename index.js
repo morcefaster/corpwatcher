@@ -525,7 +525,7 @@ function watchwebsitehttps(website) {
                     lasterror = Date.now();
                     errorchannel.send("Had an issue getting website "+website+": "+e.message+" (code "+error.http_code+")");
                 })
-                watchwebsitehttp(website);
+                watchwebsitehttps(website);
             }
         }, delay);
     }
