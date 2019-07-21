@@ -239,7 +239,7 @@ client.on("message", (message) => {
         currentcomments = parseInt(message.content.toLowerCase().split(" ")[1]);
     }
 
-    if (command ==="iwannawatchtoo") {
+    if (command ==="iwannawatchtoo" || command === "w") {
         if (message.member.roles.find(r=>r.name === rolename)) {
             message.channel.send(message.author+": you're already on the list, you silly goose.");
             return;
@@ -248,7 +248,7 @@ client.on("message", (message) => {
         message.channel.send(message.author+": Congratulations! You are now a stalker.");
     }
 
-    if (command ==="idontwannawatchanymore") {
+    if (command ==="idontwannawatchanymore" || command==="nw") {
         if (!message.member.roles.find(r=>r.name === rolename)) {
             message.channel.send(message.author+": you're not watching anything, you donut.");
             return;
@@ -320,7 +320,7 @@ function watchcomments(user) {
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{ 
                         try{                       
-                            let obj = JSON.parse(data);                        ;
+                            let obj = JSON.parse(data);
                             let comments = obj["data"]["children"].length;
                             spamtriggercomments = (spamtriggercomments+1) % spamcount;
                             if (spamtriggercomments === 1) {
@@ -368,7 +368,7 @@ function watchwebsitehttps(website) {
                             websitehtml = data;                                        
                             spamtriggerwebsite = (spamtriggerwebsite+1) % spamcount;
                             if (spamtriggerwebsite === 1) {
-                                spamchannel.send("Website "+website+" has "+currentwebsite.length+" characters. " + (firstrunw?(currentwebsite!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"first run"));
+                                spamchannel.send("Website "+website+" has "+websitehtml.length+" characters. " + (firstrunw?(currentwebsite!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"first run"));
                             }
                             if (websitehtml!==currentwebsite) {
                                 if (firstrunw) {
@@ -410,7 +410,7 @@ function watchwebsitehttp(website) {
                             websitehtml = data;                                        
                             spamtriggerwebsite = (spamtriggerwebsite+1) % spamcount;
                             if (spamtriggerwebsite === 1) {
-                                spamchannel.send("Website "+website+" has "+currentwebsite.length+" characters. " + (firstrunw?(currentwebsite!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));
+                                spamchannel.send("Website "+website+" has "+websitehtml.length+" characters. " + (firstrunw?(currentwebsite!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));
                             }
                             if (websitehtml!==currentwebsite) {
                                 if (firstrunw) {
