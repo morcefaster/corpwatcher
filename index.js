@@ -78,7 +78,7 @@ function shouldSpam(url) {
     for(var i in websiteswatched){
         if (websiteswatched[i].url === url) {
             websiteswatched[i].spamtrigger = (websiteswatched[i].spamtrigger +1 ) % spamcount;
-            return websiteswatched[i] === 1;
+            return websiteswatched[i].spamtrigger === 1;
         }
     }
     console.log("Could not find website "+url+" (shouldSpam)");
