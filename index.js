@@ -27,7 +27,7 @@ var spamrole;
 var checkredditposts = 0;
 var checkredditcomments = 0;
 var checkwebsite = 0;
-var rolename = "corpcontroller";
+var rolename = "corpwatcher";
 var spamrolename = "spamreader";
 var superrolename = "corpcontroller";
 var adminrolename = "Admin";
@@ -112,10 +112,10 @@ function isFirstRun(url) {
     console.log("Could not find website "+url+" (isFirstRun)");
 }
 
-function firstRun(url) {
+function firstRun(url) {    
     for(var i in websiteswatched){
         if (websiteswatched[i].url === url) {
-            websiteswatched[i].firstRun=1;
+            websiteswatched[i].firstrun=1;
             return;
         }
     }
