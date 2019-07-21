@@ -58,7 +58,7 @@ var spamcount = 3;
 
 function isWatched(url) {
     for(var i in websiteswatched){
-        if (websiteswatched[i].url = url) {
+        if (websiteswatched[i].url === url) {
             return true;
         }
     }
@@ -76,7 +76,7 @@ function watchWebsite(url) {
 
 function shouldSpam(url) {
     for(var i in websiteswatched){
-        if (websiteswatched[i].url = url) {
+        if (websiteswatched[i].url === url) {
             websiteswatched[i].spamtrigger = websiteswatched[i].spamtrigger % spamcount;
             return websiteswatched[i] === 1;
         }
@@ -86,7 +86,7 @@ function shouldSpam(url) {
 
 function getContent(url) {
     for(var i in websiteswatched){
-        if (websiteswatched[i].url = url) {
+        if (websiteswatched[i].url === url) {
             return websiteswatched[i].content;
         }
     }
@@ -95,7 +95,7 @@ function getContent(url) {
 
 function setContent(url, content){
     for(var i in websiteswatched){
-        if (websiteswatched[i].url = url) {
+        if (websiteswatched[i].url === url) {
             websiteswatched[i].content = content;
             return;
         }
@@ -105,7 +105,7 @@ function setContent(url, content){
 
 function isFirstRun(url) {
     for(var i in websiteswatched){
-        if (websiteswatched[i].url = url) {
+        if (websiteswatched[i].url === url) {
             return websiteswatched[i].firstrun;
         }
     }
@@ -114,7 +114,7 @@ function isFirstRun(url) {
 
 function firstRun(url) {
     for(var i in websiteswatched){
-        if (websiteswatched[i].url = url) {
+        if (websiteswatched[i].url === url) {
             websiteswatched[i].firstRun=1;
             return;
         }
@@ -124,7 +124,7 @@ function firstRun(url) {
 
 function removeSite(url) {
     for(var i in websiteswatched){
-        if (websiteswatched[i].url = url) {
+        if (websiteswatched[i].url === url) {
             websiteswatched.splice(i, 1);
             return;
         }
