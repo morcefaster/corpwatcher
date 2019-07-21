@@ -32,6 +32,7 @@ var adminrolename = "Admin";
 var spamchannel;
 var errorchannel;
 var alertchannel;
+var welcomechannel;
 
 var currentposts = 0;
 var currentcomments = 0;
@@ -77,10 +78,15 @@ client.on("ready", () => {
     spamchannel = guild.channels.find(r=>r.name === "shamelessspam");
     errorchannel = guild.channels.find(r=>r.name === "errors");
     alertchannel = guild.channels.find(r=>r.name === "argalert");
+    welcomechannel = guild.channels.find(r=>r.name === "welcome");
 });
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
+}
+
+client.on("guildMemberAdd", (member) => {
+    welcomechannel.send("Welcome, **"+member+"**! Remember to write \"!w\" to subscribe to notifications, mute spam channels, and head over to #pawelsaskoiscool to shitpost.");
 }
 
 client.on("message", (message) => {
