@@ -87,7 +87,7 @@ function getRandomInt(max) {
 
 client.on("guildMemberAdd", (member) => {
     welcomechannel.send("Welcome, **"+member+"**! Remember to write \"!w\" to subscribe to notifications, mute spam channels, and head over to #pawelsaskoiscool to shitpost.");
-}
+})
 
 client.on("message", (message) => {
 
