@@ -239,6 +239,14 @@ client.on("message", (message) => {
         currentcomments = parseInt(message.content.toLowerCase().split(" ")[1]);
     }
 
+    if (command ==="testsetwebsite") {
+        if (!message.member.roles.find(r=>r.name === superrolename) && !message.member.roles.find(r=>r.name === adminrolename))  {
+            message.channel.send(message.author+": and who the fuck are you to ask me that?");
+            return;
+        }
+        currentwebsite = message.content.toLowerCase().split(" ")[1];
+    }
+
     if (command ==="iwannawatchtoo" || command === "w") {
         if (message.member.roles.find(r=>r.name === rolename)) {
             message.channel.send(message.author+": you're already on the list, you silly goose.");
@@ -281,7 +289,7 @@ function watchposts(user) {
                             }
                             if (posts!==currentposts) {
                                 if (firstrunp){
-                                    alertchannel.send(role.mention+" **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
+                                    alertchannel.send(role +" **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
                                 }
                                 currentposts=posts;
                             }
@@ -328,7 +336,7 @@ function watchcomments(user) {
                             }
                             if (comments!==currentcomments) {
                                 if (firstrunc){
-                                    alertchannel.send(role.mention+"**OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
+                                    alertchannel.send(role+"**OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
                                 }
                                 currentcomments=comments;
                             }
@@ -368,11 +376,11 @@ function watchwebsitehttps(website) {
                             websitehtml = data;                                        
                             spamtriggerwebsite = (spamtriggerwebsite+1) % spamcount;
                             if (spamtriggerwebsite === 1) {
-                                spamchannel.send("Website "+website+" has "+websitehtml.length+" characters. " + (firstrunw?(currentwebsite!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"first run"));
+                                spamchannel.send("Website "+website+" has "+websitehtml.length+" characters. " + (firstrunw?(currentwebsite!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));
                             }
                             if (websitehtml!==currentwebsite) {
                                 if (firstrunw) {
-                                    alertchannel.send(role.mention+"{} **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
+                                    alertchannel.send(role+"{} **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
                                 } 
                                 currentwebsite=websitehtml;
                             }
@@ -414,7 +422,7 @@ function watchwebsitehttp(website) {
                             }
                             if (websitehtml!==currentwebsite) {
                                 if (firstrunw) {
-                                    alertchannel.send(role.mention+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role.mention)+website+"**");
+                                    alertchannel.send(role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
                                 }
                                 currentwebsite=websitehtml;
                             }    
