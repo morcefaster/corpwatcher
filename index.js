@@ -155,7 +155,7 @@ client.on("ready", () => {
     console.log("guild is "+guild);
     role = guild.roles.find(r => r.name === rolename);
     console.log("role is "+role);  
-    spamrole = guild.roles.find(r=> r.name = spamrolename);
+    spamrole = guild.roles.find(r=> r.name === spamrolename);
     spamchannel = guild.channels.find(r=>r.name === "shamelessspam");
     errorchannel = guild.channels.find(r=>r.name === "errors");
     alertchannel = guild.channels.find(r=>r.name === "argalert");
