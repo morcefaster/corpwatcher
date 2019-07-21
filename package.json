@@ -1,0 +1,33 @@
+{
+  "name": "hello-world-discord-bot",
+  "version": "1.0.0",
+  "description": "Simple example project how to develop a Discord Bot based on the library Discord.js",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/julianYaman/hello-world-discord-bot.git"
+  },
+  "scripts": {
+    "test": "node main.js"
+  },
+  "keywords": [
+    "Discord.js",
+    "Discord",
+    "Bot",
+    "Hello",
+    "World"
+  ],
+  "author": "Julian Yaman <mail@julianyaman.de>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/julianYaman/hello-world-discord-bot/issues"
+  },
+  "homepage": "https://github.com/julianYaman/hello-world-discord-bot#readme",
+  "dependencies": {
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "discord.js": "^11.5.1",
+    "follow-redirects": "^1.7.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {}
+}
