@@ -439,7 +439,7 @@ function watchposts(user) {
                     console.log(e);
                     errors++;
                     lasterror = Date.now();
-                    errorchannel.send("Had an issue getting "+user+"'s posts: "+e.message+" (code "+error.http_code+")");
+                    errorchannel.send("Had an issue getting "+user+"'s posts: "+e.message+" (code "+e.http_code+")");
                 })
                 watchposts(user);
             }
@@ -484,7 +484,7 @@ function watchcomments(user) {
                     console.log(e);
                     errors++;
                     lasterror = Date.now();
-                    errorchannel.send("Had an issue getting "+user+"'s comments: "+e.message+" (code "+error.http_code+")");
+                    errorchannel.send("Had an issue getting "+user+"'s comments: "+e.message+" (code "+e.http_code+")");
                 })
                 watchcomments(user);
             }
@@ -526,7 +526,7 @@ function watchwebsitehttps(website) {
                     console.log(e);
                     errors++;
                     lasterror = Date.now();
-                    errorchannel.send("Had an issue getting website "+website+": "+e.message+" (code "+error.http_code+")");
+                    errorchannel.send("Had an issue getting website "+website+": "+e.message+" (code "+e.http_code+")");
                 })
                 watchwebsitehttps(website);
             }
@@ -567,7 +567,7 @@ function watchwebsitehttp(website) {
                     console.log(e);
                     errors++;
                     lasterror = Date.now();
-                    errorchannel.send("Had an issue getting website "+website+": "+e.message+" (code "+error.http_code+")");
+                    errorchannel.send("Had an issue getting website "+website+": "+e.message+" (code "+e.http_code+")");
                 })
                 watchwebsitehttp(website);
             }
