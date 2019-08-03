@@ -233,9 +233,7 @@ client.on("message", (message) => {
         }
 
         websiteslist = message.content.toLowerCase().split(" ");
-        console.log(websiteslist);
-        websiteslist = websiteslist.splice(0, 1);
-        console.log(websiteslist);
+        websiteslist.splice(0, 1);
 
         if (websiteswatched.length + websiteslist.length > MAX_WEBSITES) {
             message.channel.send(message.author+": So many websites won't fit, onii-chan! I'm already watching "+websiteswatched.length+", Max: " + MAX_WEBSITES);
