@@ -9,9 +9,6 @@ const BOT_VERSION = "2.0.0";
 const delay = 15000;
 const MAX_WEBSITES = 10;
 
-// Here you find the prefix for all commands.
-// For example: When it is set to "!" then you can execute commands with "!" like "!help"
-//              or if you set it to "_" then you can execute commands like "_help".
 const commandPrefix = "!";
 
 const helpfulthings = ["Have you tried checking the background image?", 
@@ -27,6 +24,7 @@ var spamrole;
 var checkredditposts = 0;
 var checkredditcomments = 0;
 var checkwebsite = 0;
+var erole = "@everyone ";
 var rolename = "corpwatcher";
 var spamrolename = "spamreader";
 var superrolename = "corpcontroller";
@@ -56,6 +54,12 @@ var spamtriggerwebsite = 0;
 
 var spamcount = 3;
 
+
+function got_error(str) {
+    console.log(str);
+    errorchannel.send(str);
+}
+
 function isWatched(url) {
     for(var x in websiteswatched){        
         if (websiteswatched[x].url === url) {
@@ -81,7 +85,7 @@ function shouldSpam(url) {
             return websiteswatched[i].spamtrigger === 1;
         }
     }
-    console.log("Could not find website "+url+" (shouldSpam)");
+    got_error("Could not find website "+url+" (shouldSpam)");
 }
 
 function getContent(url) {
@@ -90,8 +94,12 @@ function getContent(url) {
             return websiteswatched[i].content;
         }
     }
-    console.log("Could not find website "+url+" (get content)");
+    got_error("Could not find website "+url+" (get content)");    
 }
+
+
+
+// what documentation?
 
 function setContent(url, content){
     for(var i in websiteswatched){
@@ -100,7 +108,7 @@ function setContent(url, content){
             return;
         }
     }
-    console.log("Could not find website "+url+" (set content)");
+    got_error("Could not find website "+url+" (set content)");
 }
 
 function isFirstRun(url) {
@@ -109,7 +117,7 @@ function isFirstRun(url) {
             return websiteswatched[i].firstrun;
         }
     }
-    console.log("Could not find website "+url+" (isFirstRun)");
+    got_error("Could not find website "+url+" (isFirstRun)");
 }
 
 function firstRun(url) {    
@@ -119,7 +127,7 @@ function firstRun(url) {
             return;
         }
     }
-    console.log("Could not find website "+url+" (firstRun)");
+    got_error("Could not find website "+url+" (firstRun)");
 }
 
 function removeSite(url) {
@@ -129,7 +137,7 @@ function removeSite(url) {
             return;
         }
     }
-    console.log("Could not find website "+url+" (removeSite)");
+    got_error("Could not find website "+url+" (removeSite)");
 }
 
 
@@ -423,23 +431,22 @@ function watchposts(user) {
                             }
                             if (posts!==currentposts) {
                                 if (firstrunp){
-                                    alertchannel.send(role +" **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
+                                    alertchannel.send(erole+" **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
                                 }
                                 currentposts=posts;
                             }
                             firstrunp = 1;
                         } catch (ex) {
-                            console.log(ex);
+                            got_error(ex);
                         }
 
 
                     })
                     
-                }).on('error', (e) => {
-                    console.log(e);
+                }).on('error', (e) => {                    
                     errors++;
                     lasterror = Date.now();
-                    errorchannel.send("Had an issue getting "+user+"'s posts: "+e.message+" (code "+e.http_code+")");
+                    got_error("Had an issue getting "+user+"'s posts: "+e.message+" (code "+e.http_code+")");
                 })
                 watchposts(user);
             }
@@ -470,21 +477,20 @@ function watchcomments(user) {
                             }
                             if (comments!==currentcomments) {
                                 if (firstrunc){
-                                    alertchannel.send(role+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
+                                    alertchannel.send(erole+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
                                 }
                                 currentcomments=comments;
                             }
                             firstrunc = 1;
 
                         } catch (ex) {
-                            console.log(ex);
+                            got_error(ex);
                         }
                     })
-                }).on('error', (e) => {
-                    console.log(e);
+                }).on('error', (e) => {                    
                     errors++;
                     lasterror = Date.now();
-                    errorchannel.send("Had an issue getting "+user+"'s comments: "+e.message+" (code "+e.http_code+")");
+                    got_error("Had an issue getting "+user+"'s comments: "+e.message+" (code "+e.http_code+")");
                 })
                 watchcomments(user);
             }
@@ -513,20 +519,19 @@ function watchwebsitehttps(website) {
                             }
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
-                                    alertchannel.send(role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
+                                    alertchannel.send(erole+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
                                 }
                                 setContent(website, websitehtml);
                             }    
                             firstRun(website);
-                        } catch (ex) {
-                            console.log(ex);
+                        } catch (ex) {                            
+                            got_error("Had an issue: "+ex);
                         }
                     })
-                }).on('error', (e) => {
-                    console.log(e);
+                }).on('error', (e) => {                    
                     errors++;
                     lasterror = Date.now();
-                    errorchannel.send("Had an issue getting website "+website+": "+e.message+" (code "+e.http_code+")");
+                    got_error("Had an issue getting website "+website+": "+e.message+" (code "+e.http_code+")");
                 })
                 watchwebsitehttps(website);
             }
@@ -554,20 +559,19 @@ function watchwebsitehttp(website) {
                             }
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
-                                    alertchannel.send(role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
+                                    alertchannel.send(erole+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
                                 }
                                 setContent(website, websitehtml);
                             }    
                             firstRun(website);
-                        } catch (ex) {
-                            console.log(ex);
+                        } catch (ex) {                            
+                            got_error("Had an issue: "+ex);
                         }
                     })
-                }).on('error', (e) => {
-                    console.log(e);
+                }).on('error', (e) => {                    
                     errors++;
                     lasterror = Date.now();
-                    errorchannel.send("Had an issue getting website "+website+": "+e.message+" (code "+e.http_code+")");
+                    got_error("Had an issue getting website "+website+": "+e.message+" (code "+e.http_code+")");
                 })
                 watchwebsitehttp(website);
             }
@@ -576,6 +580,4 @@ function watchwebsitehttp(website) {
 }
 
 
-
-// function which log in the bot
 client.login(process.env.mysweettoken);
