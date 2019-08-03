@@ -13,5 +13,7 @@ I know it looks like shite.
 
 I know commit history is a mess.
 
+The random replies are necessary.
+
 No ragrets.
 
