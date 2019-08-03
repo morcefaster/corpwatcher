@@ -245,10 +245,10 @@ client.on("message", (message) => {
         if (websiteslist.length === 0) {
             bigreply += "Please specify the fucking websites, baka.";
         } else {
-            foreach(websiteurl in websiteslist) {
+            websiteslist.forEach( (websiteurl) => {
                 if (isWatched(websiteurl)){
-                    bigreply+= "I'm already watching "+websiteurl+", baka.\n");
-                    continue;
+                    bigreply+= "I'm already watching "+websiteurl+", baka.\n";
+                    return;
                 }
                 if (websiteurl.startsWith("https://")) {
                     watchWebsite(websiteurl);
@@ -257,11 +257,11 @@ client.on("message", (message) => {
                     watchWebsite(websiteurl);
                     watchwebsitehttp(websiteurl);
                 } else {
-                    bigreply+="Please specify the fucking protocol for ["+websiteurl"], baka.\n";
-                    continue;
+                    bigreply+="Please specify the fucking protocol for ["+websiteurl+"], baka.\n";
+                    return;
                 }
                 bigreply+="Now watching "+websiteurl+"\n";
-            }
+            });
         }
         message.channel.send(bigreply);
     }
