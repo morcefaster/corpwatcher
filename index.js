@@ -180,27 +180,16 @@ client.on("guildMemberAdd", (member) => {
 
 client.on("message", (message) => {
 
-    // It will do nothing when the message doesnt start with the prefix
     if(!message.content.startsWith(commandPrefix)) return;
 
 
-    // This cuts out the command from the message which was sent and cuts out the prefix
-    // So when you check if a specific command was executed, you must not type
-    //   if(command === commandprefix + "help" )
-    // but you can type:
-    //   if(command === "help")
     let command = message.content.toLowerCase().split(" ")[0];
     command = command.slice(commandPrefix.length);
 
-    // Lets do now the commands!
-
-    // First command is "hello"
-    // It just sends a message which says hello to you.
 
     if(command === "hello"){
-        // We´re sending a message to the channel where the command was executed.
-        // Then we´re getting the author of the message and tag him to our message.
-        message.channel.send("Hello " + message.author + "! Nice to meet you. :smiley: ");
+    
+        message.channel.send("Hello is dead. You're next");
     }
 
     if(command === "help"){
@@ -235,6 +224,46 @@ client.on("message", (message) => {
         watchposts(watcheduser);
         watchcomments(watcheduser);
         message.channel.send("As you wish, "+pickone(howtocallme)+".");
+    }
+
+    if (command === "watchwebsites") {
+        if (!message.member.roles.find(r=>r.name === superrolename) && !message.member.roles.find(r=>r.name === adminrolename))  {
+            message.channel.send(message.author+": and who the fuck are you to ask me that?");
+            return;
+        }
+
+        websiteslist = message.content.toLowerCase().split(" ");
+        websiteslist = websiteslist.splice(0, 1);
+
+        if (websiteswatched.length + websiteslist.length > MAX_WEBSITES) {
+            message.channel.send(message.author+": So many websites won't fit, onii-chan! I'm already watching "+websiteswatched.length+", Max: " + MAX_WEBSITES);
+            return;
+        }
+
+        var bigreply = message.author+": ";
+
+        if (websiteslist.length === 0) {
+            bigreply += "Please specify the fucking websites, baka.";
+        } else {
+            foreach(websiteurl in websiteslist) {
+                if (isWatched(websiteurl)){
+                    bigreply+= "I'm already watching "+websiteurl+", baka.\n");
+                    continue;
+                }
+                if (websiteurl.startsWith("https://")) {
+                    watchWebsite(websiteurl);
+                    watchwebsitehttps(websiteurl);
+                } else if (websiteurl.startsWith("http://")) {
+                    watchWebsite(websiteurl);
+                    watchwebsitehttp(websiteurl);
+                } else {
+                    bigreply+="Please specify the fucking protocol for ["+websiteurl"], baka.\n";
+                    continue;
+                }
+                bigreply+="Now watching "+websiteurl+"\n";
+            }
+        }
+        message.channel.send(bigreply);
     }
 
     if (command ==="watchwebsite") 
