@@ -24,7 +24,7 @@ var spamrole;
 var checkredditposts = 0;
 var checkredditcomments = 0;
 var checkwebsite = 0;
-var erole = "@everyone ";
+var erole = "@everyone";
 var rolename = "corpwatcher";
 var spamrolename = "spamreader";
 var superrolename = "corpcontroller";
@@ -175,7 +175,7 @@ function getRandomInt(max) {
 }
 
 client.on("guildMemberAdd", (member) => {
-    welcomechannel.send("Welcome, **"+member+"**! Remember to write \"!w\" to subscribe to notifications, mute spam channels, and head over to #pawelsaskoiscool to shitpost.");
+    welcomechannel.send("Welcome, **"+member+"**! Write \"!w\" to subscribe to website change notifications, check #about, make sure to mute spam channels, and head over to #pawelsaskoiscool to shitpost.");
 })
 
 client.on("message", (message) => {
@@ -460,7 +460,7 @@ function watchposts(user) {
                             }
                             if (posts!==currentposts) {
                                 if (firstrunp){
-                                    alertchannel.send(erole+" **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
+                                    alertchannel.send(rolename+" **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
                                 }
                                 currentposts=posts;
                             }
@@ -506,7 +506,7 @@ function watchcomments(user) {
                             }
                             if (comments!==currentcomments) {
                                 if (firstrunc){
-                                    alertchannel.send(erole+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
+                                    alertchannel.send(rolename+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
                                 }
                                 currentcomments=comments;
                             }
@@ -544,11 +544,12 @@ function watchwebsitehttps(website) {
                         try{ 
                             websitehtml = data;                            
                             if (shouldSpam(website)) {
-                                spamchannel.send("Website "+website+" has "+data.length+" characters. " + (isFirstRun(website)?(getContent(website)!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));
+                                spamchannel.send("Website "+website+" has "+data.length+" characters. " + (isFirstRun(website)?(getContent(website)!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"));                                
                             }
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
-                                    alertchannel.send(erole+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
+                                    spamchannel.send("New site content: \n ========= \n "+websitehtml+"\n =========");
+                                    alertchannel.send(rolename+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
                                 }
                                 setContent(website, websitehtml);
                             }    
@@ -588,7 +589,8 @@ function watchwebsitehttp(website) {
                             }
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
-                                    alertchannel.send(erole+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! ".format(role)+website+"**");
+                                    spamchannel.send("New site content: \n ========= \n "+websitehtml+"\n =========");
+                                    alertchannel.send(rolename+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
                                 }
                                 setContent(website, websitehtml);
                             }    
