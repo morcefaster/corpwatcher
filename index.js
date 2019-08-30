@@ -460,7 +460,7 @@ function watchposts(user) {
                             }
                             if (posts!==currentposts) {
                                 if (firstrunp){
-                                    alertchannel.send(erole+" **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
+                                    alertchannel.send(erole+" , @"+rolename+"  **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
                                 }
                                 currentposts=posts;
                             }
@@ -506,7 +506,7 @@ function watchcomments(user) {
                             }
                             if (comments!==currentcomments) {
                                 if (firstrunc){
-                                    alertchannel.send(erole+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
+                                    alertchannel.send(erole+" , @"+rolename+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
                                 }
                                 currentcomments=comments;
                             }
@@ -549,7 +549,7 @@ function watchwebsitehttps(website) {
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
                                     spamchannel.send("New site content: \n ========= \n "+websitehtml+"\n =========");
-                                    alertchannel.send(erole+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
+                                    alertchannel.send(erole+" , @"+rolename+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
                                 }
                                 setContent(website, websitehtml);
                             }    
@@ -590,7 +590,7 @@ function watchwebsitehttp(website) {
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
                                     spamchannel.send("New site content: \n ========= \n "+websitehtml+"\n =========");
-                                    alertchannel.send(erole+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
+                                    alertchannel.send(erole+" , @"+rolename+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
                                 }
                                 setContent(website, websitehtml);
                             }    
