@@ -57,7 +57,7 @@ var spamcount = 3;
 
 function got_error(str) {
     console.log(str);
-    errorchannel.send(str);
+    errorchannel.send("Had an error: "+str);
 }
 
 function isWatched(url) {
