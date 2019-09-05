@@ -388,8 +388,7 @@ function getRandomInt(max) {
 }
 
 client.on("guildMemberAdd", (member) => {
-    welcomechannel.send("Welcome, **"+member+"**! Write \"!w\" to subscribe to website change notifications, check #about, make sure to mute spam channels, and head over to #pawelsaskoiscool to shitpost.");
-})
+    welcomechannel.send("Welcome, **"+member+"**! Write \"!w\" to subscribe to website change notifications (**will be pinged upon manual review**), type **!we** to get subscribed to **automatic pings** (POSSIBLY FALSE POSITIVES), and type **!wrs** to get access to spam channel.\n\nCheck #about, make sure to mute spam channels, and head over to #pawełsaskoiscool to shitpost.");})
 
 client.on("message", (message) => {
     if(!message.content.startsWith(commandPrefix)) {
