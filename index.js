@@ -1009,9 +1009,7 @@ function watchwhoishttps(website) {
                             var domainPos = websitehtml.indexOf(" domains that matched this search query.");
                             var domainCount = -1;
                             errorchannel.send(websitehtml.substring(0, 1000));
-                            console.log(websitehtml);
                             console.log(domainPos);
-
                             if (domainPos !== -1) {
                                 var count = websitehtml.substring(domainPos-2, 2);
                                 console.log(websitehtml.substring(domainPos-2, 2));
