@@ -576,12 +576,12 @@ client.on("message", (message) => {
             return;
         }
         whoisurl = whoisurl[1];
-        if (!isWatched(whoisurl)){
+        if (!isWhoisWatched(whoisurl)){
             message.channel.send(message.author + ": I-I'm not even watching that!");
             return;
         }        
 
-        removeWhois(websiteurl);
+        removeWhois(whoisurl);
         message.channel.send("As you wish, "+pickone(howtocallme)+".");
     }
 
@@ -993,8 +993,11 @@ function watchwebsitehttp(website) {
 }
 
 function watchwhoishttps(website) {
+    console.log("watchwhois https");
     if (isWhoisWatched(website)){
+        console.log("watched");
         if (!isFirstWhoisRun(website)) {
+                console.log("first run");
                 let options = {                    
                     headers: { 'User-Agent': 'argchecker/1.1' }
                 }                  
@@ -1005,6 +1008,7 @@ function watchwhoishttps(website) {
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{
                         try{ 
+                            console.log("retrieved");
                             websitehtml = data;                            
                             var domainPos = websitehtml.indexOf(" domains that matched this search query.");
                             var domainCount = -1;
