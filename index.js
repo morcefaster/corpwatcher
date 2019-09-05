@@ -996,7 +996,7 @@ function watchwhoishttps(website) {
     if (isWhoisWatched(website)){
         if (!isFirstWhoisRun(website)) {
                 let options = {                    
-                    headers: { 'User-Agent': 'argchecker/1.1' }
+                    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36' }
                 }                  
                 https.get(website, options, (res)=>
                 {
