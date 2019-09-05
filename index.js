@@ -397,7 +397,7 @@ client.on("message", (message) => {
 
         while (newmessage.toLowerCase().includes("pawel sasko")) {
             var n = newmessage.toLowerCase().lastIndexOf("pawel sasko");
-            newmessage = replaceat(newmessage,n,"pawel sasko".length, "Paweł Sasko (that really cool dude)");            
+            newmessage = replaceat(newmessage,n,n+"pawel sasko".length, "Paweł Sasko (that really cool dude)");            
         }
         newmessage = "What this law-abiding citizen meant to write was:\n"+message.author+": "+newmessage;
         message.delete();
