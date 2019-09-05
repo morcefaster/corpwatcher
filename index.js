@@ -602,7 +602,7 @@ client.on("message", (message) => {
         }
         var gld = client.guilds.get("602463551134892053");
         testrolemnt =  message.content.toLowerCase().split(" ")[1];
-        var mentrole = guild.roles.find(r => r.name === testrolemnt);       
+        var mentrole = gld.roles.find(r => r.name === testrolemnt);       
         message.channel.send("ok, mentioning "+mentrole);
     }
 
