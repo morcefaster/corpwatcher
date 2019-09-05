@@ -405,16 +405,6 @@ function removeSite(url) {
 }
 
 
-function removeWhois(url) {
-    for(var i in whoiswatched){
-        if (whoiswatched[i].url === url) {
-            whoiswatched.splice(i, 1);
-            return;
-        }
-    }
-    got_error("Could not find whois "+url+" (removeWhois)");
-}
-
 
 function firstrunreddit() {
     firstrunc = 0;
@@ -525,66 +515,7 @@ client.on("message", (message) => {
             message.channel.send(message.author+": and who the fuck are you to ask me that?");
             return;            
         }
-
-        whoislist = message.content.toLowerCase().split(" ");
-        whoislist.splice(0, 1);
-
-        if (whoiswatched.length + whoiswatched.length > MAX_RWHOIS) {
-            message.channel.send(message.author+": So many whois websites won't fit, onii-chan! I'm already watching "+whoiswatched.length+", Max: " + MAX_RWHOIS);
-            return;
-        }
-
-        var bigreply = message.author+": ";
-
-        if (whoislist.length === 0) {
-            bigreply += "Please specify the fucking whois url, baka.";
-        } else {
-            whoislist.forEach( (whoisurl) => {
-                if (isWhoisWatched(whois)){
-                    bigreply+= "I'm already watching "+whoisurl+", baka.\n";
-                    return;
-                }
-                if (whoisurl.startsWith("https://")) {
-                    watchWhois(whoisurl);
-                    watchwhoishttps(whoisurl);
-                } else if (whoisurl.startsWith("http://")) {
-                    bigreply+="I don't support fucking http for ["+whoisurl+"], baka";
-                } else {
-                    bigreply+="Please specify the fucking protocol for ["+whoisurl+"], baka.\n";
-                    return;
-                }
-                bigreply+="Now watching whois "+whoisurl+"\n";
-            });
-        }
-        message.channel.send(bigreply);
     }
-
-    if (command ==="stopwatchingwhois") {
-        if (!message.member.roles.find(r=>r.name === superrolename) && !message.member.roles.find(r=>r.name === adminrolename))  {
-            message.channel.send(message.author+": and who the fuck are you to ask me that?");
-            return;
-        }        
-
-        whoisurl = message.content.toLowerCase().split(" ");
-        if (whoisurl.length === 1) {
-            message.channel.send(message.author + " what fucking whois?");
-            return;
-        }
-        if (whoisurl.length > 2) {            
-            message.channel.send(message.author + " which fucking whois?");
-            return;
-        }
-        whoisurl = whoisurl[1];
-        if (!isWatched(whoisurl)){
-            message.channel.send(message.author + ": I-I'm not even watching that!");
-            return;
-        }        
-
-        removeWhois(websiteurl);
-        message.channel.send("As you wish, "+pickone(howtocallme)+".");
-    }
-
-
 
     if (command === "watchwebsites") {
         if (!message.member.roles.find(r=>r.name === superrolename) && !message.member.roles.find(r=>r.name === adminrolename))  {
@@ -753,16 +684,6 @@ client.on("message", (message) => {
         for(var i in websiteswatched) {
             num = parseInt(i) + 1;
             mes += "\n"+num+": ["+websiteswatched[i].url+"]";
-        }
-        message.channel.send(mes);
-
-    }
-
-    if (command ==="listwhois") {      
-        var mes = message.author+": Currently I'm watching "+websiteswatched.length+" whois-es.";        
-        for(var i in whoiswatched) {
-            num = parseInt(i) + 1;
-            mes += "\n"+num+": ["+whoiswatched[i].url+"]";
         }
         message.channel.send(mes);
 
