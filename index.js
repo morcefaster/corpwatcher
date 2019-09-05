@@ -8,6 +8,7 @@ require('http').createServer().listen(3000)
 const BOT_VERSION = "2.0.0";
 const delay = 15000;
 const MAX_WEBSITES = 10;
+const MAX_RWHOIS = 3;
 
 const commandPrefix = "!";
 const catfacts=["The heaviest cat ever recorded was 46 lbs.",
