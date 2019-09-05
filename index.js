@@ -872,6 +872,6 @@ function watchwebsitehttp(website) {
 client.login(process.env.mysweettoken);
 
 client.on("ready", async () => {
-    client.user.setPresence({ game: { name: "Corp Thing's every move", type: "WATCHING" }, status: "online" });
+    client.user.setPresence({ game: { name: "CorpThing's every move", type: "WATCHING" }, status: "online" });
 });
 
