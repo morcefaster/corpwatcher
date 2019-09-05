@@ -236,8 +236,6 @@ var spamrolename = "spamreader";
 var superrolename = "corpcontroller";
 var adminrolename = "Admin";
 var websiteswatched = [];
-var whoiswatched = [];
-var whoisdelay = 3600000;
 
 var spamchannel;
 var errorchannel;
@@ -276,43 +274,6 @@ function isWatched(url) {
     }
     return false;
 }
-
-function isWhoisWatched(url) {
-    for(var x in websiteswatched){        
-        if (websiteswatched[x].url === url) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function watchWhois(url) {
-    whoiswatched.push({
-        url: url,
-        firstrun: 0,
-        content: null
-    });
-}
-
-function getWhoisContent(url) {
-    for(var i in whoiswatched){
-        if (whoiswatched[i].url === url) {
-            return whoiswatched[i].content;
-        }
-    }
-    got_error("Could not find whois "+url+" (get content)");   
-}
-
-function setWhoisContent(url, content){
-    for(var i in whoiswatched){
-        if (whoiswatched[i].url === url) {
-            whoiswatched[i].content = content;
-            return;
-        }
-    }
-    got_error("Could not find whois "+url+" (set content)");
-}
-
 
 function watchWebsite(url) {
     websiteswatched.push( { 
@@ -354,25 +315,6 @@ function setContent(url, content){
         }
     }
     got_error("Could not find website "+url+" (set content)");
-}
-
-function isFirstWhoisRun(url) {
-    for(var i in whoiswatched){
-        if (whoiswatched[i].url === url) {
-            return whoiswatched[i].firstrun;
-        }
-    }
-    got_error("Could not find whois "+url+" (isFirstWhoisRun)");
-}
-
-function firstWhoisRun(url) {    
-    for(var i in whoiswatched){
-        if (whoiswatched[i].url === url) {
-            whoiswatched[i].firstrun=1;
-            return;
-        }
-    }
-    got_error("Could not find whois "+url+" (firstWhoisRun)");
 }
 
 function isFirstRun(url) {
@@ -508,13 +450,6 @@ client.on("message", (message) => {
         watchposts(watcheduser);
         watchcomments(watcheduser);
         message.channel.send("As you wish, "+pickone(howtocallme)+".");
-    }
-
-    if (command === "watchreversewhois") {
-        if (!message.member.roles.find(r=>r.name === superrolename) && !message.member.roles.find(r=>r.name === adminrolename))  {
-            message.channel.send(message.author+": and who the fuck are you to ask me that?");
-            return;            
-        }
     }
 
     if (command === "watchwebsites") {
@@ -909,90 +844,6 @@ function watchwebsitehttp(website) {
                 watchwebsitehttp(website);
             }
         }, delay);
-    }
-}
-
-function watchwhoishttps(website) {
-    if (isWhoisWatched(website)){
-        if (!isFirstWhoisRun(website)) {
-                let options = {                    
-                    headers: { 'User-Agent': 'argchecker/1.1' }
-                }                  
-                https.get(website, options, (res)=>
-                {
-                    let status = res.statusCode;
-                    var data = "";
-                    res.on("data", (chunk)=>{data+=chunk;});
-                    res.on('end', ()=>{
-                        try{ 
-                            websitehtml = data;                            
-                            var domainPos = websitehtml.indexOf(" domains that matched this search query.");
-                            var domainCount = -1;
-                            if (domainPos !== -1) {
-                                var count = websitehtml.substring(domainPos-2, 2);
-                                domainCount = parseInt(count);
-                            }                            
-                            spamchannel.send("Whois result from "+website+": "+(domainCount === -1 ? "[error]": (domainCount + " domains registered. " + (isFirstWhoisRun(website)?(getWhoisContent(website)!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"))));                            
-                            if (websitehtml!==getWhoisContent(website)) {
-                                if (isFirstWhoisRun(website)) {
-                                    spamchannel.send("New site content at "+website+": \n ========= \n "+websitehtml+"\n =========");
-                                    alertchannel.send(erole+" , "+role+" **What in the blazes, domain registrations have changed!! "+website+"**");
-                                }
-                                setWhoisContent(website, websitehtml);
-                            }    
-                            firstWhoisRun(website);
-                        } catch (ex) {                            
-                            got_error("Had an issue getting whois: "+ex);
-                        }
-                    })
-                }).on('error', (e) => {                    
-                    errors++;
-                    lasterror = Date.now();
-                    got_error("Had an issue getting website "+website+": "+e.message+" (code "+e.http_code+")");
-                })
-                watchwebsitehttp(website);
-            };
-
-        setTimeout( () => {     
-            if (isWhoisWatched(website)){
-                let options = {                    
-                    headers: { 'User-Agent': 'argchecker/1.1' }
-                }                  
-                https.get(website, options, (res)=>
-                {
-                    let status = res.statusCode;
-                    var data = "";
-                    res.on("data", (chunk)=>{data+=chunk;});
-                    res.on('end', ()=>{
-                        try{ 
-                            websitehtml = data;                            
-                            var domainPos = websitehtml.indexOf(" domains that matched this search query.");
-                            var domainCount = -1;
-                            if (domainPos !== -1) {
-                                var count = websitehtml.substring(domainPos-2, 2);
-                                domainCount = parseInt(count);
-                            }                            
-                            spamchannel.send("Whois result from "+website+": "+(domainCount === -1 ? "[error]": (domainCount + " domains registered. " + (isFirstWhoisRun(website)?(getWhoisContent(website)!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"))));                            
-                            if (websitehtml!==getWhoisContent(website)) {
-                                if (isFirstWhoisRun(website)) {
-                                    spamchannel.send("New site content at "+website+": \n ========= \n "+websitehtml+"\n =========");
-                                    alertchannel.send(erole+" , "+role+" **What in the blazes, domain registrations have changed!! "+website+"**");
-                                }
-                                setWhoisContent(website, websitehtml);
-                            }    
-                            firstWhoisRun(website);
-                        } catch (ex) {                            
-                            got_error("Had an issue getting whois: "+ex);
-                        }
-                    })
-                }).on('error', (e) => {                    
-                    errors++;
-                    lasterror = Date.now();
-                    got_error("Had an issue getting website "+website+": "+e.message+" (code "+e.http_code+")");
-                })
-                watchwebsitehttp(website);
-            }
-        }, whoisdelay);
     }
 }
 
