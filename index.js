@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const client  = new Discord.Client();
 const http = require('follow-redirects').http;
 const https = require('follow-redirects').https;
+const fs =  require("fs");
 
 require('http').createServer().listen(3000)
 
@@ -55,6 +56,30 @@ var spamtriggerwebsite = 0;
 var spamcount = 3;
 
 
+function website_result(url, str, error) 
+{
+    var lastchange = getLastChanged(url);
+    var result = {
+        url: url,
+        content: str,
+        error: error,
+        next_check: (new Date().getTime() + delay),
+        last_changed: lastchange === 0 ? "never":lastchange
+    }
+
+    fs.writeFile("website.txt", JSON.stringify(result), (ex) => {
+        if (ex) {
+            got_error(ex);
+        }        
+    })
+}
+
+function reddit_result(name, posts, comments, error) 
+{
+
+}
+
+
 function got_error(str) {
     console.log(str);
     errorchannel.send("Had an error: "+str);
@@ -74,7 +99,8 @@ function watchWebsite(url) {
         url: url,
         firstrun: 0,
         content: null,
-        spamtrigger: 0
+        spamtrigger: 0,
+        last_changed: 0
     });
 }
 
@@ -109,6 +135,25 @@ function setContent(url, content){
         }
     }
     got_error("Could not find website "+url+" (set content)");
+}
+
+function setLastChanged(url, time) {
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url === url) {
+            websiteswatched[i].last_changed = new Date().getTime();
+            return;
+        }
+    }
+    got_error("Could not find website "+url+" (set last changed)");   
+}
+
+function getLastChanged(url) {
+    for(var i in websiteswatched){
+        if (websiteswatched[i].url === url) {
+            return websiteswatched[i].last_changed;
+        }
+    }
+    got_error("Could not find website "+url+" (get last changed)");    
 }
 
 function isFirstRun(url) {
@@ -611,4 +656,7 @@ function watchwebsitehttp(website) {
 }
 
 
-client.login(process.env.mysweettoken);
+//client.login(process.env.mysweettoken);
+
+watchWebsite("https://nightcorp.net");
+website_result("https://nightcorp.net", "content", "error123");
