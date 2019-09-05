@@ -279,8 +279,8 @@ function isWatched(url) {
 }
 
 function isWhoisWatched(url) {
-    for(var x in websiteswatched){        
-        if (websiteswatched[x].url === url) {
+    for(var x in whoiswatched){        
+        if (whoiswatched[x].url === url) {
             return true;
         }
     }
@@ -993,11 +993,8 @@ function watchwebsitehttp(website) {
 }
 
 function watchwhoishttps(website) {
-    console.log("watchwhois https");
     if (isWhoisWatched(website)){
-        console.log("watched");
         if (!isFirstWhoisRun(website)) {
-                console.log("first run");
                 let options = {                    
                     headers: { 'User-Agent': 'argchecker/1.1' }
                 }                  
@@ -1008,7 +1005,6 @@ function watchwhoishttps(website) {
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{
                         try{ 
-                            console.log("retrieved");
                             websitehtml = data;                            
                             var domainPos = websitehtml.indexOf(" domains that matched this search query.");
                             var domainCount = -1;
