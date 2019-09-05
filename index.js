@@ -541,7 +541,7 @@ client.on("message", (message) => {
             bigreply += "Please specify the fucking whois url, baka.";
         } else {
             whoislist.forEach( (whoisurl) => {
-                if (isWhoisWatched(whois)){
+                if (isWhoisWatched(whoisurl)){
                     bigreply+= "I'm already watching "+whoisurl+", baka.\n";
                     return;
                 }
