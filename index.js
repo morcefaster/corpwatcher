@@ -1008,8 +1008,11 @@ function watchwhoishttps(website) {
                             websitehtml = data;                            
                             var domainPos = websitehtml.indexOf(" domains that matched this search query.");
                             var domainCount = -1;
+                            errorchannel.send(websitehtml.substring(0, 1000));
+                            console.log(domainPos);
                             if (domainPos !== -1) {
                                 var count = websitehtml.substring(domainPos-2, 2);
+                                console.log(websitehtml.substring(domainPos-2, 2));
                                 domainCount = parseInt(count);
                             }                            
                             spamchannel.send("Whois result from "+website+": "+(domainCount === -1 ? "[error]": (domainCount + " domains registered. " + (isFirstWhoisRun(website)?(getWhoisContent(website)!==websitehtml?" (**content changed!!**)":"(content unchanged)"):"(first run)"))));                            
