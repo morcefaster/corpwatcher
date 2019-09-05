@@ -227,11 +227,13 @@ const helpfulthings = ["Have you tried checking the background image?",
 const howtocallme = ["master", "my flesh-bearing eminence", "your majesty", "your highness", "your greatness", "o' great hero", "o' great hero, defeater of corporations, eater of sausages", "o' great hero, ruler of corporations, preorderer of Cyberpunk 2077", "though I'm not doing it for your sake, baka"];
 var role;
 var spamrole;
+var superwatcher;
 var checkredditposts = 0;
 var checkredditcomments = 0;
 var checkwebsite = 0;
 var erole = "@everyone";
 var rolename = "corpwatcher";
+var superwatchername = "supercorpwatcher";
 var spamrolename = "spamreader";
 var superrolename = "corpcontroller";
 var adminrolename = "Admin";
@@ -370,6 +372,7 @@ client.on("ready", () => {
     role = guild.roles.find(r => r.name === rolename);
     console.log("role is "+role);  
     spamrole = guild.roles.find(r=> r.name === spamrolename);
+    superwatcher = guild.roles.find(r=> r.name === superwatchername);
     spamchannel = guild.channels.find(r=>r.name === "shamelessspam");
     errorchannel = guild.channels.find(r=>r.name === "errors");
     alertchannel = guild.channels.find(r=>r.name === "argalert");
@@ -646,6 +649,24 @@ client.on("message", (message) => {
         message.channel.send(message.author+": Cheeki-breeki! You are now a stalker.");
     }
 
+    if (command ==="iwannawatcheverything" || command === "we") {
+        if (message.member.roles.find(r=>r.name === superwatchername)) {
+            message.channel.send(message.author+": you already do you damn creep");
+            return;
+        }
+        message.member.addRole(superwatcher).catch(console.error);
+        message.channel.send(message.author+": Congratulations! You will now be pinged all the time. Ha ha ha.");
+    }
+
+    if (command ==="idontwannawatcheverything" || command === "nwe") {
+        if (!message.member.roles.find(r=>r.name === superwatchername)) {
+            message.channel.send(message.author+": you're already spared from the corporate pings.");
+            return;
+        }
+        message.member.removeRole(superwatcher).catch(console.error);
+        message.channel.send(message.author+": Congratulations! You no longer need to close discord at night.");
+    }
+
     if (command ==="idontwannawatchanymore" || command==="nw") {
         if (!message.member.roles.find(r=>r.name === rolename)) {
             message.channel.send(message.author+": you're not watching anything, you donut.");
@@ -697,7 +718,7 @@ function watchposts(user) {
                             }
                             if (posts!==currentposts) {
                                 if (firstrunp){
-                                    alertchannel.send(erole+" , "+role+"  **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
+                                    alertchannel.send(superwatcher+"  **OH MY GOD, "+user+" MADE A POST!!**\n https://www.reddit.com/u/"+user+"/submitted");                                    
                                 }
                                 currentposts=posts;
                             }
@@ -743,7 +764,7 @@ function watchcomments(user) {
                             }
                             if (comments!==currentcomments) {
                                 if (firstrunc){
-                                    alertchannel.send(erole+" , "+role+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
+                                    alertchannel.send(superwatcher+" **OH MY SWEET LORD, "+user+" COMMENTED!!**\n https://www.reddit.com/u/"+user+"/comments");
                                 }
                                 currentcomments=comments;
                             }
@@ -786,7 +807,7 @@ function watchwebsitehttps(website) {
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
                                     spamchannel.send("New site content: \n ========= \n "+websitehtml+"\n =========");
-                                    alertchannel.send(erole+" , "+role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
+                                    alertchannel.send(superwatcher+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
                                 }
                                 setContent(website, websitehtml);
                             }    
@@ -827,7 +848,7 @@ function watchwebsitehttp(website) {
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
                                     spamchannel.send("New site content: \n ========= \n "+websitehtml+"\n =========");
-                                    alertchannel.send(erole+" , "+role+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
+                                    alertchannel.send(superwatcher+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
                                 }
                                 setContent(website, websitehtml);
                             }    
@@ -850,5 +871,7 @@ function watchwebsitehttp(website) {
 
 client.login(process.env.mysweettoken);
 
-
+client.on("ready", async () => {
+    client.user.setPresence({ game: { name: "Corp Thing's every move", type: "WATCHING" }, status: "online" });
+});
 
