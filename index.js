@@ -228,12 +228,14 @@ const howtocallme = ["master", "my flesh-bearing eminence", "your majesty", "you
 var role;
 var spamrole;
 var superwatcher;
+var ultrawatcher;
 var checkredditposts = 0;
 var checkredditcomments = 0;
 var checkwebsite = 0;
 var erole = "@everyone";
 var rolename = "corpwatcher";
 var superwatchername = "supercorpwatcher";
+var ultrawatchername = "ultracorpwatcher";
 var spamrolename = "spamreader";
 var superrolename = "corpcontroller";
 var adminrolename = "Admin";
@@ -243,6 +245,7 @@ var spamchannel;
 var errorchannel;
 var alertchannel;
 var welcomechannel;
+var possiblealertchannel;
 
 var currentposts = 0;
 var currentcomments = 0;
@@ -261,6 +264,8 @@ var spamtriggerposts = 0;
 var spamtriggerwebsite = 0;
 
 var spamcount = 3;
+
+var alertThreshold = 3;
 
 
 function got_error(str) {
@@ -282,6 +287,7 @@ function watchWebsite(url) {
         url: url,
         firstrun: 0,
         content: null,
+        changed: 0,
         spamtrigger: 0
     });
 }
@@ -318,6 +324,37 @@ function setContent(url, content){
     }
     got_error("Could not find website "+url+" (set content)");
 }
+
+
+function setNoChange(website) {
+	for(var i in websiteswatched){
+        if (websiteswatched[i].url === url) {
+            websiteswatched[i].changed = 0;
+            return;
+        }
+    }
+    got_error("Could not find website "+url+" (set no change)");
+}
+
+function getChange(website) {
+	for(var i in websiteswatched){
+        if (websiteswatched[i].url === url) {
+            return websiteswatched[i].changed;
+        }
+    }
+    got_error("Could not find website "+url+" (get changed)");
+}
+
+function addNewChange(website) {
+	for(var i in websiteswatched){
+        if (websiteswatched[i].url === url) {
+            websiteswatched[i].changed++;
+            return;
+        }
+    }
+    got_error("Could not find website "+url+" (add new change)");
+}
+
 
 function isFirstRun(url) {
     for(var i in websiteswatched){
@@ -373,8 +410,11 @@ client.on("ready", () => {
     console.log("role is "+role);  
     spamrole = guild.roles.find(r=> r.name === spamrolename);
     superwatcher = guild.roles.find(r=> r.name === superwatchername);
+    ultrawatcher = guild.roles.find(r=> r.name === ultrawatchername);
     spamchannel = guild.channels.find(r=>r.name === "shamelessspam");
     errorchannel = guild.channels.find(r=>r.name === "errors");
+    possiblealertchannel = guild.channels.find(r=>r.name === "")
+
     alertchannel = guild.channels.find(r=>r.name === "argalert");
     welcomechannel = guild.channels.find(r=>r.name === "welcome");
 });
@@ -639,6 +679,25 @@ client.on("message", (message) => {
         }
     }
 
+
+	if (command ==="justfuckmeup" || command === "fmu") {
+        if (message.member.roles.find(r=>r.name === ultrawatchername)) {
+            message.channel.send(message.author+": you're already on the list, you silly goose.");
+            return;
+        }
+        message.member.addRole(ultrawatcher).catch(console.error);
+        message.channel.send(message.author+": Hope you know what you're doing.");
+    }
+
+    if (command ==="makeitstop" || command === "nfmu") {
+        if (!message.member.roles.find(r=>r.name === ultrawatchername)) {
+            message.channel.send(message.author+": you're going crazy.");
+            return;
+        }
+        message.member.removeRole(role).catch(console.error);
+        message.channel.send(message.author+": Done. Free grief counseling will be available soon.");
+    }
+
     if (command ==="iwannawatchtoo" || command === "w") {
         if (message.member.roles.find(r=>r.name === rolename)) {
             message.channel.send(message.author+": you're already on the list, you silly goose.");
@@ -751,6 +810,10 @@ function watchcomments(user) {
                 https.get('https://www.reddit.com/user/'+user+"/comments.json", options, (res)=>
                 {
                     let status = res.statusCode;
+                    if (status > 400) {
+                    	got_error("Issue retrieving website ["+website+"]: HTTP status "+status);
+                    	return;
+                    }
                     var data = "";
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{ 
@@ -795,6 +858,10 @@ function watchwebsitehttps(website) {
                 https.get(website, options, (res)=>
                 {
                     let status = res.statusCode;
+                    if (status > 400) {
+                    	got_error("Issue retrieving website["+website+"]: HTTP status "+status);
+                    	return;
+                    }
                     var data = "";
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{
@@ -805,11 +872,24 @@ function watchwebsitehttps(website) {
                             }
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
-                                    spamchannel.send("New site content: \n ========= \n "+websitehtml+"\n =========");
-                                    alertchannel.send(superwatcher+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
+                                    spamchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, 300)+"\n (...)\n =========");
+                                    if (getChange(website) === 0) 
+                                    {
+                                    	possiblealertchannel.send(ultrawatcher+" Site may have changed: ["+website+"]. New html begins with \n"+websitehtml.substring(0, 300));
+                                	}
+                                    addNewChange(website);
+                                    if (getChange(website) >= alertThreshold) {
+                                    	alertchannel.send(superwatcher+" **SWEET CHOCOLATE BALLS, THE SITE HAS CHANGED!! ["+website+"]**");
+                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, 300)+"\n (...)\n =========")
+                                    }
+                                }                                
+                                if (!isFirstRun(website) || getChange(website) >= alertThreshold) 
+                                {
+                                	setContent(website, websitehtml);
                                 }
-                                setContent(website, websitehtml);
-                            }    
+                            } else {
+                            	setNoChange(website);
+                            }
                             firstRun(website);
                         } catch (ex) {                            
                             got_error("Had an issue: "+ex);
@@ -825,6 +905,7 @@ function watchwebsitehttps(website) {
         }, delay);
     }
 }
+
 
 function watchwebsitehttp(website) {
     if (isWatched(website)){
@@ -846,11 +927,24 @@ function watchwebsitehttp(website) {
                             }
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
-                                    spamchannel.send("New site content: \n ========= \n "+websitehtml+"\n =========");
-                                    alertchannel.send(superwatcher+" **HOLY FUCKING SHIT, THE SITE HAS CHANGED!! "+website+"**");
+                                    spamchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, 300)+"\n (...)\n =========");
+                                    if (getChange(website) === 0) 
+                                    {
+                                    	possiblealertchannel.send(ultrawatcher+" Site may have changed: ["+website+"]. New html begins with \n"+websitehtml.substring(0, 300));
+                                	}
+                                    addNewChange(website);
+                                    if (getChange(website) >= alertThreshold) {
+                                    	alertchannel.send(superwatcher+" **SWEET CHOCOLATE BALLS, THE SITE HAS CHANGED!! ["+website+"]**");
+                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, 300)+"\n (...)\n =========")
+                                    }
                                 }
-                                setContent(website, websitehtml);
-                            }    
+                                if (!isFirstRun(website) || getChange(website) >= alertThreshold) 
+                                {
+                                	setContent(website, websitehtml);
+                                }
+                            } else {
+                            	setNoChange(website);
+                            }
                             firstRun(website);
                         } catch (ex) {                            
                             got_error("Had an issue: "+ex);
