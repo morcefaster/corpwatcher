@@ -694,7 +694,7 @@ client.on("message", (message) => {
             message.channel.send(message.author+": you're going crazy.");
             return;
         }
-        message.member.removeRole(role).catch(console.error);
+        message.member.removeRole(ultrawatcher).catch(console.error);
         message.channel.send(message.author+": Done. Free grief counseling will be available soon.");
     }
 
