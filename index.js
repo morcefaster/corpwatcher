@@ -326,7 +326,7 @@ function setContent(url, content){
 }
 
 
-function setNoChange(website) {
+function setNoChange(url) {
 	for(var i in websiteswatched){
         if (websiteswatched[i].url === url) {
             websiteswatched[i].changed = 0;
@@ -336,7 +336,7 @@ function setNoChange(website) {
     got_error("Could not find website "+url+" (set no change)");
 }
 
-function getChange(website) {
+function getChange(url) {
 	for(var i in websiteswatched){
         if (websiteswatched[i].url === url) {
             return websiteswatched[i].changed;
@@ -345,7 +345,7 @@ function getChange(website) {
     got_error("Could not find website "+url+" (get changed)");
 }
 
-function addNewChange(website) {
+function addNewChange(url) {
 	for(var i in websiteswatched){
         if (websiteswatched[i].url === url) {
             websiteswatched[i].changed++;
@@ -413,7 +413,7 @@ client.on("ready", () => {
     ultrawatcher = guild.roles.find(r=> r.name === ultrawatchername);
     spamchannel = guild.channels.find(r=>r.name === "shamelessspam");
     errorchannel = guild.channels.find(r=>r.name === "errors");
-    possiblealertchannel = guild.channels.find(r=>r.name === "")
+    possiblealertchannel = guild.channels.find(r=>r.name === "possiblyalert")
 
     alertchannel = guild.channels.find(r=>r.name === "argalert");
     welcomechannel = guild.channels.find(r=>r.name === "welcome");
