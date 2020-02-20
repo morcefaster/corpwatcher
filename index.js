@@ -764,6 +764,10 @@ function watchposts(user) {
                 https.get('https://www.reddit.com/user/'+user+"/submitted.json", options, (res)=>
                 {
                     let status = res.statusCode;
+                    if (status > 400) {
+                    	got_error("Issue retrieving redditboi: HTTP status "+status);
+                    	return;
+                    }
                     var data = "";
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{            
@@ -811,7 +815,7 @@ function watchcomments(user) {
                 {
                     let status = res.statusCode;
                     if (status > 400) {
-                    	got_error("Issue retrieving website ["+website+"]: HTTP status "+status);
+                    	got_error("Issue retrieving redditboi: HTTP status "+status);
                     	return;
                     }
                     var data = "";
@@ -917,6 +921,10 @@ function watchwebsitehttp(website) {
                 http.get(website, options, (res)=>
                 {
                     let status = res.statusCode;
+                    if (status > 400) {
+                    	got_error("Issue retrieving website["+website+"]: HTTP status "+status);
+                    	return;
+                    }
                     var data = "";
                     res.on("data", (chunk)=>{data+=chunk;});
                     res.on('end', ()=>{
