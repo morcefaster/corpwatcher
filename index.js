@@ -880,11 +880,6 @@ function watchwebsitehttps(website) {
                                     if (getChange(website) === 0) 
                                     {
                                     	possiblealertchannel.send(ultrawatcher+" Site may have changed: ["+website+"]. New html begins with \n"+websitehtml.substring(0, Math.min(300, websitehtml.length)-1));
-                                	}
-                                    addNewChange(website);
-                                    if (getChange(website) >= alertThreshold) {
-                                    	alertchannel.send(superwatcher+" **SWEET CHOCOLATE BALLS, THE SITE HAS CHANGED!! ["+website+"]**");
-                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, Math.min(300, websitehtml.length-1))+"\n (...)\n =========")
                                     	var pos = firstDiffIndex(websitehtml, getContent(website));
                                     	if (pos === -1) {
                                     		alertchannel.send("Some fuckery happened, they're actually same");
@@ -896,8 +891,13 @@ function watchwebsitehttps(website) {
                                     		var became = (pos < websitehtml.length)
                                     		? websitehtml.substring(Math.max(0, pos-100), Math.min(pos+200, websitehtml.length-1))
                                     		: "[none]";
-                                    		alertchannel.send("========= Was: \n "+was+"\n========= Became:"+became);
+                                    		possiblealertchannel.send("========= Was: \n "+was+"\n========= Became:"+became);
                                     	}
+                                	}
+                                    addNewChange(website);
+                                    if (getChange(website) >= alertThreshold) {
+                                    	alertchannel.send(superwatcher+" **SWEET CHOCOLATE BALLS, THE SITE HAS CHANGED!! ["+website+"]**");
+                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, Math.min(300, websitehtml.length-1))+"\n (...)\n =========")                                    	
                                   	}
                                 }                                
                                 if (!isFirstRun(website) || getChange(website) >= alertThreshold) 
@@ -966,11 +966,6 @@ function watchwebsitehttp(website) {
                                     if (getChange(website) === 0) 
                                     {
                                     	possiblealertchannel.send(ultrawatcher+" Site may have changed: ["+website+"]. New html begins with \n"+websitehtml.substring(0, Math.min(300, websitehtml.length)-1));
-                                	}
-                                    addNewChange(website);
-                                    if (getChange(website) >= alertThreshold) {
-                                    	alertchannel.send(superwatcher+" **SWEET CHOCOLATE BALLS, THE SITE HAS CHANGED!! ["+website+"]**");
-                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, Math.min(300, websitehtml.length-1))+"\n (...)\n =========")
                                     	var pos = firstDiffIndex(websitehtml, getContent(website));
                                     	if (pos === -1) {
                                     		alertchannel.send("Some fuckery happened, they're actually same");
@@ -982,8 +977,13 @@ function watchwebsitehttp(website) {
                                     		var became = (pos < websitehtml.length)
                                     		? websitehtml.substring(Math.max(0, pos-100), Math.min(pos+200, websitehtml.length-1))
                                     		: "[none]";
-                                    		alertchannel.send("========= Was: \n "+was+"\n========= Became:"+became);
+                                    		possiblealertchannel.send("========= Was: \n "+was+"\n========= Became:"+became);
                                     	}
+                                	}
+                                    addNewChange(website);
+                                    if (getChange(website) >= alertThreshold) {
+                                    	alertchannel.send(superwatcher+" **SWEET CHOCOLATE BALLS, THE SITE HAS CHANGED!! ["+website+"]**");
+                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, Math.min(300, websitehtml.length-1))+"\n (...)\n =========")                                    	
                                   	}
                                 }                                
                                 if (!isFirstRun(website) || getChange(website) >= alertThreshold) 
