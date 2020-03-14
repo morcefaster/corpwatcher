@@ -876,16 +876,29 @@ function watchwebsitehttps(website) {
                             }
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
-                                    spamchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, 300)+"\n (...)\n =========");
+                                    spamchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, Math.min(300, websitehtml.length)-1)+"\n (...)\n =========");
                                     if (getChange(website) === 0) 
                                     {
-                                    	possiblealertchannel.send(ultrawatcher+" Site may have changed: ["+website+"]. New html begins with \n"+websitehtml.substring(0, 300));
+                                    	possiblealertchannel.send(ultrawatcher+" Site may have changed: ["+website+"]. New html begins with \n"+websitehtml.substring(0, Math.min(300, websitehtml.length)-1));
                                 	}
                                     addNewChange(website);
                                     if (getChange(website) >= alertThreshold) {
                                     	alertchannel.send(superwatcher+" **SWEET CHOCOLATE BALLS, THE SITE HAS CHANGED!! ["+website+"]**");
-                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, 300)+"\n (...)\n =========")
-                                    }
+                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, Math.min(300, websitehtml.length-1))+"\n (...)\n =========")
+                                    	var pos = firstDiffIndex(websitehtml, getContent(website));
+                                    	if (pos === -1) {
+                                    		alertchannel.send("Some fuckery happened, they're actually same");
+                                    	}
+                                    	else {                                    	
+                                    		var was = (pos < getContent(website).length)
+                                    		? getContent(website).substring(Math.max(0, pos-100), Math.min(pos+200, getContent(website).length-1))
+                                    		: "[none]";
+                                    		var became = (pos < websitehtml.length)
+                                    		? websitehtml.substring(Math.max(0, pos-100), Math.min(pos+200, websitehtml.length-1))
+                                    		: "[none]";
+                                    		alertchannel.send("========= Was: \n "+was+"\n========= Became:"+became);
+                                    	}
+                                  	}
                                 }                                
                                 if (!isFirstRun(website) || getChange(website) >= alertThreshold) 
                                 {
@@ -909,6 +922,20 @@ function watchwebsitehttps(website) {
         }, delay);
     }
 }
+
+function firstDiffIndex(a, b) 
+{
+	var shorterStr = Math.min(a.length, b.length);
+	for (var i = 0; i < shorterStr; i++) {
+		if (a[i] !== b[i])
+			return i;
+	}
+	if (a.length !== b.length)
+		return shorterStr;
+	return -1;
+}
+
+
 
 
 function watchwebsitehttp(website) {
@@ -935,17 +962,30 @@ function watchwebsitehttp(website) {
                             }
                             if (websitehtml!==getContent(website)) {
                                 if (isFirstRun(website)) {
-                                    spamchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, 300)+"\n (...)\n =========");
+                                    spamchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, Math.min(300, websitehtml.length)-1)+"\n (...)\n =========");
                                     if (getChange(website) === 0) 
                                     {
-                                    	possiblealertchannel.send(ultrawatcher+" Site may have changed: ["+website+"]. New html begins with \n"+websitehtml.substring(0, 300));
+                                    	possiblealertchannel.send(ultrawatcher+" Site may have changed: ["+website+"]. New html begins with \n"+websitehtml.substring(0, Math.min(300, websitehtml.length)-1));
                                 	}
                                     addNewChange(website);
                                     if (getChange(website) >= alertThreshold) {
                                     	alertchannel.send(superwatcher+" **SWEET CHOCOLATE BALLS, THE SITE HAS CHANGED!! ["+website+"]**");
-                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, 300)+"\n (...)\n =========")
-                                    }
-                                }
+                                    	alertchannel.send("New site content: \n ========= \n "+websitehtml.substring(0, Math.min(300, websitehtml.length-1))+"\n (...)\n =========")
+                                    	var pos = firstDiffIndex(websitehtml, getContent(website));
+                                    	if (pos === -1) {
+                                    		alertchannel.send("Some fuckery happened, they're actually same");
+                                    	}
+                                    	else {                                    	
+                                    		var was = (pos < getContent(website).length)
+                                    		? getContent(website).substring(Math.max(0, pos-100), Math.min(pos+200, getContent(website).length-1))
+                                    		: "[none]";
+                                    		var became = (pos < websitehtml.length)
+                                    		? websitehtml.substring(Math.max(0, pos-100), Math.min(pos+200, websitehtml.length-1))
+                                    		: "[none]";
+                                    		alertchannel.send("========= Was: \n "+was+"\n========= Became:"+became);
+                                    	}
+                                  	}
+                                }                                
                                 if (!isFirstRun(website) || getChange(website) >= alertThreshold) 
                                 {
                                 	setContent(website, websitehtml);
